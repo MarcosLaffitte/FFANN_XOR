@@ -1,8 +1,9 @@
 # FFANN_XOR
 Feed Forward Artificial Neural Network and XOR example
 
-- Simple FFANN that learns with BackPropagation Algorithm over Stochastic Gradient Descent.
+- Simple FFANN\Layered-Network that learns with BackPropagation Algorithm over Stochastic Gradient Descent.
 - Example: learn and reproduce XOR function.
+- Five neurons in hidden layer. Neurons in input and output layers depend on data set.
 - Due to local minima, single run might return bad results, so run the script more than once if needed
 
 - Run with:
