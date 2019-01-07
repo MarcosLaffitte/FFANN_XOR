@@ -11,9 +11,8 @@
 # - Instrucciones: los archivos launcher, builder, trainer y tester debe estar en la misma carpeta junto con los archivos de functionTrain.txt y functionTest.txt    #
 #                  correr en terminal linux como:                                                                                                                    #
 #                        python3.5 FFANN_1_Launcher_Marcos_Emmannuel_Gonzalez_Laffitte.py [function_entrenamiento.txt] [function_prueba.txt]                         #
-#   * el archivo debe contener el nombre de la funcion y los formatos señalados junto con su proposito, i.e. _entrenamiento.txt y _prueba.txt                        #
-#                                                                                                                                                                    #
-#     ejemplo:     python3.5   FFANN_1_Launcher_Marcos_Emmannuel_Gonzalez_Laffitte.py   XOR_entrenamiento.txt   XOR_prueba.txt                                       #
+#   * el archivo debe contener el nombre de la funcion y los formatos señalados junto con su proposito, i.e. _training.txt y _test.txt                               #
+#     ej: XOR_entrenamiento.txt y XOR_prueba.txt                                                                                                                     #
 #                                                                                                                                                                    #
 #   * se recomienda entrenar a la red con aproximadamente 50 pares de entrenamiento.                                                                                 #
 #                                                                                                                                                                    #

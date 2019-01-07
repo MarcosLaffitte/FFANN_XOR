@@ -48,7 +48,7 @@
 import sys                        # erase line from begining
 import pickle                     # guardar objetos en archivo de bits
 import math                       # funcion de activacion
-import random                     # use randrange to generate random intial weights for the ffann
+import random                     # use randrange to generate random intial weights for the ffann and sgd
 import matplotlib.pyplot as plt   # graficar la convergencia del error
 import warnings                   # ignorar advertencias de matplotlib en servidor
 import time
@@ -284,6 +284,8 @@ def entrenarModelo(modelo, errorCota, ritmoApr, inercia, intervalo, iteraciones)
     tiempoInicial = 0
     tiempoFinal = 0
     tiempo = 0
+    recorridas = []
+    llavesAleatorias = []
     # abrir archivo de modelo
     ffann = abrirArchivo(modelo)
     # obtener elementos del ffann
@@ -296,22 +298,34 @@ def entrenarModelo(modelo, errorCota, ritmoApr, inercia, intervalo, iteraciones)
     setEnt = ffann[5]
     setEva = ffann[6]
     normal = ffann[7]
+    # tomar llaves
+    llavesAleatorias = list(setEnt.keys())
+    #print(llavesAleatorias)
     # inicializar pesos de la red
     inicializarPesosAleatorios(vecSal, intervalo, topologia)
     # Obtener valor para el error deseado equivalente a una reduccion del 95% del error inicial
     errorProm = 0
-    for contador in range(int(len(setEnt.keys())/2)):
-        # definir par de entrenamiento
-        entrada = setEnt[str(contador) + "e"]
-        salida = setEnt[str(contador) + "s"]
-        # iniciar neuronas en capa de entrada con par de entrenamiento
-        activarCapaDeEntrada(neuronas, entrada)
-        # propagacion hacia el frente hasta capa de salida
-        propagacionHastaCapaSalida(neuronas, vecEnt, vecSal, topologia)
-        # propagacion hacia el frente para modulo de evaluacion de error
-        propagacionModuloError(neuronas, vecEnt, salida, topologia)
-        # obtener error
-        errorProm = (errorProm) + (obtenerError(neuronas, topologia))
+    recorridas = []
+    random.shuffle(llavesAleatorias)
+    for llave in llavesAleatorias:
+        if(not llave in recorridas):
+            # definir llaves
+            llaveE = "".join((list(llave)[0 : len(llave) - 1])) + "e"
+            llaveS = "".join((list(llave)[0 : len(llave) - 1])) + "s"
+            # definir par de entrenamiento
+            entrada = setEnt[llaveE]#setEnt[str(contador) + "e"]
+            salida = setEnt[llaveS]#setEnt[str(contador) + "s"]
+            # iniciar neuronas en capa de entrada con par de entrenamiento
+            activarCapaDeEntrada(neuronas, entrada)
+            # propagacion hacia el frente hasta capa de salida
+            propagacionHastaCapaSalida(neuronas, vecEnt, vecSal, topologia)
+            # propagacion hacia el frente para modulo de evaluacion de error
+            propagacionModuloError(neuronas, vecEnt, salida, topologia)
+            # obtener error
+            errorProm = (errorProm) + (obtenerError(neuronas, topologia))
+            # llaves ya pasadas
+            recorridas.append(llaveE)
+            recorridas.append(llaveS)
     errorProm = (errorProm) / (len(setEnt.keys())/2)    
     errorDeseado = ((errorProm) / (100)) * (100 - errorCota)
     # ciclo de entrenamiento guiado por la reduccion del error hasta alcanzar el error deseado
@@ -321,23 +335,33 @@ def entrenarModelo(modelo, errorCota, ritmoApr, inercia, intervalo, iteraciones)
     while(it < iteraciones):
         # incializar error promedio en ceros
         errorProm = 0
-        # pasos del algoritmo de retropropagacion para cada pareja de entrenamiento
-        for contador in range(int(len(setEnt.keys())/2)):
-            # definir par de entrenamiento
-            entrada = setEnt[str(contador) + "e"]
-            salida = setEnt[str(contador) + "s"]
-            # iniciar neuronas en capa de entrada con par de entrenamiento
-            activarCapaDeEntrada(neuronas, entrada)
-            # propagacion hacia el frente hasta capa de salida
-            propagacionHastaCapaSalida(neuronas, vecEnt, vecSal, topologia)
-            # propagacion hacia el frente para modulo de evaluacion de error
-            propagacionModuloError(neuronas, vecEnt, salida, topologia)
-            # paso de retropropagacion
-            retropropagacion(neuronas, vecSal, topologia)
-            # actualizar pesos
-            actualizarPesos(neuronas, vecSal, ritmoApr, inercia, topologia)
-            # obtener error
-            errorProm = (errorProm) + (obtenerError(neuronas, topologia))
+        recorridas = []
+        random.shuffle(llavesAleatorias)
+        for llave in llavesAleatorias:
+            if(not llave in recorridas):
+                # definir llaves
+                llaveE = "".join((list(llave)[0 : len(llave) - 1])) + "e"
+                llaveS = "".join((list(llave)[0 : len(llave) - 1])) + "s"
+                #print(llaveE, llaveS)
+                # definir par de entrenamiento
+                entrada = setEnt[llaveE]#setEnt[str(contador) + "e"]
+                salida = setEnt[llaveS]#setEnt[str(contador) + "s"]
+                # iniciar neuronas en capa de entrada con par de entrenamiento
+                activarCapaDeEntrada(neuronas, entrada)
+                # propagacion hacia el frente hasta capa de salida
+                propagacionHastaCapaSalida(neuronas, vecEnt, vecSal, topologia)
+                # propagacion hacia el frente para modulo de evaluacion de error
+                propagacionModuloError(neuronas, vecEnt, salida, topologia)
+                # paso de retropropagacion
+                retropropagacion(neuronas, vecSal, topologia)
+                # actualizar pesos
+                actualizarPesos(neuronas, vecSal, ritmoApr, inercia, topologia)
+                # obtener error
+                errorProm = (errorProm) + (obtenerError(neuronas, topologia))
+                # llaves ya pasadas
+                recorridas.append(llaveE)
+                recorridas.append(llaveS)
+        #print("\n")
         # promediar error
         errorProm = (errorProm) / (len(setEnt.keys())/2)
         # agregar error promedio a curva de aprendizaje
@@ -380,7 +404,7 @@ def imprimirCurvaAprendizaje(nombreSucio, error, errorFinal, tiempo):
     tiempoStr = "Tiempo: "
     errorStr = "Error mínimo alcanzado: "
     iterStr = "Numero de Iteraciones : "
-    titulo =  curvaStr + "\n"  + funciStr + nombre  + "\n" + tiempoStr+str(tiempo)+"[s]\n" + errorStr + str(round(errorFinal, 5)) + " - " + iterStr + str(len(error))
+    titulo =  curvaStr + "\n"  + funciStr + nombre  + "\n" + tiempoStr + str(tiempo) + "\n" + errorStr + str(round(errorFinal, 5)) + " - " + iterStr + str(len(error))
     # imprimir grafica de curva de aprendizaje
     plt.plot([errorFinal]*len(error), linestyle = "--", color = "lightgray")
     plt.plot(error, linestyle = '-', color = 'midnightblue')
@@ -409,7 +433,7 @@ def guardarModeloEntrenado(red):
 def obtenerModeloEntrenado(funcion):
     # parametros de aprendizaje
     errorParaReducir = 99
-    ritmoAprendizaje = 0.8
+    ritmoAprendizaje = 1
     masaInercial = 0
     cotaIntervalo = 1
     iteraciones = 10000
