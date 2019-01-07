@@ -8,14 +8,6 @@
 # - Instituto: Instituto de Matematicas UNAM                                                                                                                         #
 # - Trabajo: Feed Forwar Artificial Neural Network - 2 - Builder                                                                                                     #
 # - Descripción: Construir una FFANN , dada una topologia de propagacion hacia el frente en su descripcion general ...                                               #
-#              - topologia = [a, n+m, b, b , 1] , donde                                                                                                              #
-#              - cada entrada de la lista topologia es una capa e indica la cantidad de neuronas en esa capa                                                         #
-#              - a = no. de neuronas en capa de entrada                                                                                                              #
-#              - b = no. de neuronas en la capa de salida                                                                                                            #
-#              - n = a + b                                                                                                                                           #
-#              - m = cantidad de pares de entrenamiento                                                                                                              #
-#              - profundidad como definida en la tesis L = 5                                                                                                         #
-#              - ultimas dos capas de topologia = modulo de evaluacion del error                                                                                     #
 #                                                                                                                                                                    #
 # - Recibe:  Archivo de entrenamiento con formato genreral (funcion_a_aprender.txt, sin espacios)...                                                                 #
 #            1. x11, x12, ..., x1a > y11, y12, ..., y1b                                                                                                              #
@@ -24,6 +16,14 @@
 #            .             .              .           .                                                                                                              #
 #            .             .              .           .                                                                                                              #
 #            m. xm1, xm2, ..., xma > ym1, ym2, ..., ymb                                                                                                              #
+#                                                                                                                                                                    #
+#            - topologia = [a, h, b, b , 1] , donde                                                                                                                  #
+#            - cada entrada de la lista topologia es una capa e indica la cantidad de neuronas en esa capa                                                           #
+#            - a = no. de neuronas en capa de entrada                                                                                                                #
+#            - b = no. de neuronas en la capa de salida                                                                                                              #
+#            - h = 5                                                                                                                                                 #
+#            - m = cantidad de pares de entrenamiento                                                                                                                #
+#            - ultimas dos capas de topologia = modulo de evaluacion del error                                                                                       #
 #                                                                                                                                                                    #
 #   * se recomienda entrenar a la red con aproximadamente 50 pares de entrenamiento.                                                                                 #
 #                                                                                                                                                                    #
@@ -64,7 +64,7 @@ def construirTopologia(conjunto):
     # obtener datos sobre el conjunto de entrenamiento
     cardCapaEntrada = len(conjunto["0e"])
     cardCapaSalida = len(conjunto["0s"])
-    cardCapaInterna = cardCapaEntrada + cardCapaSalida + int(len(conjunto.keys()) / 2)
+    cardCapaInterna = 5
     # construccion de arreglo de topologia
     topo.append(cardCapaEntrada)
     topo.append(cardCapaInterna)
