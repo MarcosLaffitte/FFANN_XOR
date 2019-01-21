@@ -1,5 +1,7 @@
 # FFANN_XOR
+
 > Feed Forward Artificial Neural Network and XOR example
+
 > made by: Marcos Laffitte - as thesist of Bachelor in Technology - UNAM - CFATA
 
 - Simple FFANN\Layered-Network that learns with BackPropagation Algorithm over Stochastic Gradient Descent.
